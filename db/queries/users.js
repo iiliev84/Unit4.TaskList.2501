@@ -12,7 +12,8 @@ export async function createUser(username, password) {
 
 export async function getUsers(){
     const sql = `
-   
+    SELECT *
+    FROM users
     `;
     const {rows: users} = await db.query(sql);
     return users;
