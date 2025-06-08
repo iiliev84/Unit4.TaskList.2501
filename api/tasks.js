@@ -15,7 +15,7 @@ router.route("/").get(async (req, res) => {
 });
 
 
-router.route("/").post(async (req, res) => {
+router.route("/").post(verifyToken, async (req, res) => {
     if(!req.body){
         return res.status(400).send({error: "Missing body"})
     }
@@ -44,15 +44,11 @@ router.route("/:id").delete(verifyToken, async (req, res) => {
     if (!isValidId(id)) {
         return res.status(400).send({ error: "ID must be a positive integer" });
   }
-    const task = await getTask(id)
+    const task = await deleteTask(id)
     if(!task){
         return res.status(404).send({error: "Task not found"})
     }
-    if (req.user.id !== task.user_id) {
-        return res.status(403).send({error: "Forbidden: not authorized to delete this task."});
-    }
-    await deleteTask(id)
-    res.sendStatus(204).send("Task Deleted")
+    res.sendStatus(204)
 })
 
 router.route("/:id").put(verifyToken, async (req, res) => {
@@ -68,7 +64,7 @@ router.route("/:id").put(verifyToken, async (req, res) => {
     if (!isValidId(id)) {
         return res.status(400).send({ error: "ID must be a positive integer" });
   }
-
+  
     const task = await getTask(id)
     if(!task){
         return res.status(404).send({error: "Task not found"})
