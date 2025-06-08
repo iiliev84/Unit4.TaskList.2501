@@ -1,16 +1,24 @@
 import express from "express";
-import db from "#db/client";
 const router = express.Router();
 export default router;
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
 router.use(express.json())
 
-export function verifyToken(req, res, next){
-  const authHeader = req.headers['Authorization'];
-  const token = authHeader.split(' ')[1];
-  const decodedJWT = jwt.verify(token, process.env.JWT_SECRET);
+export function verifyToken(req, res, next) {
+  const authHeader = req.headers["authorization"];
+  if (!authHeader) {
+    return res.status(401).json({ error: "Token not provided" });
+  }
 
-  req.user = decodedJWT
-  next();
+  const token = authHeader.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({ error: "Missing authorization token" });
+  }
+
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  req.user = decoded;
+  if (!req.user) {
+    return res.status(403).send("Invalid token");
+  }
+    next();
 }
