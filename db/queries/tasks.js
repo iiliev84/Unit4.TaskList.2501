@@ -39,7 +39,7 @@ export async function deleteTask(id) {
     return task[0];
 }
 
-export async function updateTask({id, title, done}){
+export async function updateTask(id, title, done){
   const sql = `
   UPDATE tasks
   SET title = $2, done = $3

@@ -19,8 +19,9 @@ router.route("/").post(verifyToken, async (req, res) => {
     if(!req.body){
         return res.status(400).send({error: "Missing body"})
     }
-    const {title, done, user_id} = req.body
-    if(!title || done == null || !user_id){
+    const {title, done} = req.body
+    const user_id = req.user.id;
+    if(!title || done == undefined){
         return res.status(400).send({error: "Missing required fields"})
     } 
     const task = await createTask({title, done, user_id})
@@ -58,7 +59,7 @@ router.route("/:id").put(verifyToken, async (req, res) => {
     }
 
     const {title, done} = req.body
-    if(!title || done == null ){
+    if(!title || done == undefined ){
         return res.status(400).send({error: "Missing rquired fields"})
     }
     if (!isValidId(id)) {
@@ -69,6 +70,6 @@ router.route("/:id").put(verifyToken, async (req, res) => {
     if(!task){
         return res.status(404).send({error: "Task not found"})
     }
-    const tasks = await updateTask({id, title, done})
+    const tasks = await updateTask(id, title, done)
     res.send(tasks)
 })
