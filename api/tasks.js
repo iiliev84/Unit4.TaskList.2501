@@ -21,10 +21,11 @@ router.route("/").post(verifyToken, async (req, res) => {
     }
     const {title, done} = req.body
     const user_id = req.user.id;
+    console.log(user_id)
     if(!title || done == undefined){
         return res.status(400).send({error: "Missing required fields"})
     } 
-    const task = await createTask({title, done, user_id})
+    const task = await createTask(title, done, user_id)
     res.status(201).send(task)
 })
 
